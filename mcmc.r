@@ -52,7 +52,7 @@ ln_accept_ratio_time_j = function(j, tau, theta, time_j, new.time_j){
 #######################################################################################################
 
 
-mcmc_MSC = function(N, tau, theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
+mcmc_MSC = function(N, tau, theta, mu_tau, mu_theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
   
   run.time = Sys.time() 
   
@@ -62,7 +62,7 @@ mcmc_MSC = function(N, tau, theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
   accept.tau = accept.theta = accept.time = 0  
   sample_tau[1] = tau
   sample_theta[1] = theta  
-  lnp = lnprior(tau, theta, time)  
+  lnp = lnprior(tau, theta, time, mu_tau, mu_theta)  
   L = lnlikelihood(tau, time) 
   
   for(i in 1:N){
@@ -70,8 +70,8 @@ mcmc_MSC = function(N, tau, theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
     tau.new = tau + w_tau*(runif(1)-0.5)
     if (tau.new<0) tau.new = -tau.new; 
     
-    lnp.new = lnprior(tau.new, theta, time)        # Update prior with new tau
-    L.new = lnlikelihood(tau.new, time)            # Update likelihood with new tau 
+    lnp.new = lnprior(tau.new, theta, time, mu_tau, mu_theta)        # Update prior with new tau
+    L.new = lnlikelihood(tau.new, time)                              # Update likelihood with new tau 
     lnaccept = lnp.new + L.new - lnp - L 
     
     if(lnaccept >= 0 || runif(1) < exp(lnaccept)) {  # If proposal meets requirements:
@@ -86,8 +86,8 @@ mcmc_MSC = function(N, tau, theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
     theta.new = theta + w_theta*(runif(1)-0.5)
     if (theta.new<0) theta.new = -theta.new
     
-    lnp.new = lnprior(tau, theta.new, time)  # Only update the log prior because theta is not a present 
-                                             # in the log likelihood calculation. 
+    lnp.new = lnprior(tau, theta.new, time, mu_tau, mu_theta)  # Only update the log prior because theta is not a present 
+                                                               # in the log likelihood calculation. 
     lnaccept = lnp.new - lnp     
     
     if(lnaccept >= 0 || runif(1) < exp(lnaccept)) {
@@ -116,8 +116,8 @@ mcmc_MSC = function(N, tau, theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
     sample_tau[i+1] = tau             # Add accepted tau estimate
     sample_theta[i+1] = theta         # Add accepted theta estimate
     
-    lnp = lnprior(tau, theta, time)   # Update log prior 
-    L = lnlikelihood(tau, time)       # Update log likelihood
+    lnp = lnprior(tau, theta, time, mu_tau, mu_theta)   # Update log prior 
+    L = lnlikelihood(tau, time)                         # Update log likelihood
     
     
     if(i %% 100 == 0) { # progress to ensure the program is running and not dead
