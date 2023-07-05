@@ -1,12 +1,9 @@
-#########################
-#      Preparation      #
-#########################
-
-##### log prior #####
+# log prior
 
 lnprior = function(tau, theta, time, mu_tau, mu_theta) {
   
-  lnp = -(tau / mu_tau) - (theta / mu_theta)
+  lnp = -(tau / mu_tau) - (theta / mu_theta) # Exponential prior on tau with mean mu_tau
+                                             # Exponential prior on theta with mean mu_theta
   
   eq = log(2/theta) - 2 / theta * time
   
@@ -15,8 +12,7 @@ lnprior = function(tau, theta, time, mu_tau, mu_theta) {
   return(lnp + eq)
 }
 
-
-##### log likelihood #####
+# log likelihood
 
 lnlikelihood = function(tau, time) {
   
@@ -30,8 +26,7 @@ lnlikelihood = function(tau, time) {
   
 }
 
-
-##### Acceptance ratio #####
+# Acceptance ratio
 
 ln_accept_ratio_time_j = function(j, tau, theta, time_j, new.time_j){
   
@@ -46,11 +41,7 @@ ln_accept_ratio_time_j = function(j, tau, theta, time_j, new.time_j){
 }
 
 
-
-#######################################################################################################
-# Bayesian Markov Chain Monte Carlo implementation of the multispecies coalescent model for 2 species # 
-#######################################################################################################
-
+# Bayesian Markov Chain Monte Carlo implementation of the multispecies coalescent model for 2 species 
 
 mcmc_MSC = function(N, tau, theta, mu_tau, mu_theta, time_0, w_tau, w_theta, w_t, nloci = 1000){
   
