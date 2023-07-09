@@ -7,7 +7,7 @@ using Plots
 
 # Import the data
 
-msc_data = DataFrame(CSV.File("path\\to\\HC.SitesDiffs.txt"));
+msc_data = DataFrame(CSV.File("C:path\\to\\HC.SitesDiffs.txt"));
 
 
 # Log prior
